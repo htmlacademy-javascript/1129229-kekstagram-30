@@ -1,44 +1,69 @@
-import './picture.js';
-const picturesAll = document.querySelector('.pictures');
-const modalPicture = document.querySelector('.big-picture');
-const closeModal = modalPicture.querySelector('.big-picture__cancel');
-const modalShownComment = modalPicture.querySelector('.social__comment-shown-count');
-const modalLikes = modalPicture.querySelector('.likes-count');
-const modalImgblock = modalPicture.querySelector('.big-picture__img');
-const modalImg = modalImgblock.querySelector('img');
-const modalDescription = modalPicture.querySelector('.social__caption');
-const modalComments = modalPicture.querySelector('.social__comment-total-count');
+import {hideButton, showButton, showModal, hideModal, removeComments} from './modal-switch.js';
+import {createComment, commentsBlock, commentsFragment, renderData, modalPicture, modalShownCommentsCount, commentsCount} from './modal.js';
+import {COMMENTS_TO_SHOW} from './subject.js';
+const cancelModal = modalPicture.querySelector('.big-picture__cancel');
+const commentsLoader = modalPicture.querySelector('.social__comments-loader');
 
-const comments = (commentsMultiplicity) => {
-  const commentsSocial = document.querySelector('.social__comments');
-  commentsSocial.textContent = '';
-  const comment = document.querySelector('#comment').content;
-  const commentItem = comment.querySelector('li');
-  const commentsFragment = document.createDocumentFragment();
-  commentsMultiplicity.forEach(() => {
-    const commentCloneElement = commentItem.cloneNode(true);
-    const commentElementPicture = commentCloneElement.querySelector('.social__picture');
-    commentElementPicture.src = comment.avatar;
-    commentElementPicture.alt = comment.name;
-    commentCloneElement.querySelector('.social__text').textContent = comment.message;
-    commentsFragment.appendChild(commentCloneElement);
-  });
-  commentsSocial.appendChild(commentsFragment);
+let showCommentsCount = 0;
+let showComments = [];
+
+const openModalPicture = () => {
+  showModal(modalPicture);
+  document.addEventListener('keydown', onModalEscKeydown);
 };
 
-picturesAll.addEventListener('click', (evt) => {
-  modalPicture.classList.remove('hidden');
-  const picture = evt.target.parentElement;
-  modalImg.src = picture.url;
-  modalShownComment.textContent = picture.comments.length;
-  modalLikes.textContent = picture.likes;
-  modalComments.textContent = picture.comments.length;
-  modalDescription.textContent = picture.description;
-  comments(picture.comments);
-});
+const resetCommentsCount = () => {
+  showCommentsCount = 0;
+  showComments.length = 0;
+};
 
-closeModal.addEventListener('click', () => {
-  modalPicture.classList.add('hidden');
-});
+const closeModalPicture = () => {
+  hideModal(modalPicture);
+  removeEscListener();
+  resetCommentsCount();
+};
 
+const renderComments = () => {
+  showComments.splice(0, COMMENTS_TO_SHOW).forEach((comment) => {
+    createComment(comment);
+    commentsFragment.appendChild(createComment(comment));
+    showCommentsCount++;
+  });
+  modalShownCommentsCount.textContent = showCommentsCount;
+  commentsBlock.appendChild(commentsFragment);
+  if (commentsCount <= showCommentsCount) {
+    hideButton(commentsLoader);
+  } else {
+    showButton(commentsLoader);
+  }
+};
 
+const renderPost = (evt, postArray) => {
+  const photo = evt.target.closest('.picture');
+  postArray.forEach((photoPost) => {
+    if (parseInt(photo.dataset.id, 10) === photoPost.id) {
+      openModalPicture();
+      removeComments();
+      renderData(photoPost);
+      showComments = structuredClone(photoPost.comments);
+      renderComments();
+    }
+  });
+};
+
+commentsLoader.addEventListener('click', () => renderComments(showComments));
+
+cancelModal.addEventListener('click', () => closeModalPicture());
+
+function onModalEscKeydown (evt) {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    closeModalPicture();
+  }
+}
+
+function removeEscListener() {
+  document.removeEventListener('keydown', onModalEscKeydown);
+}
+
+export {renderPost};
