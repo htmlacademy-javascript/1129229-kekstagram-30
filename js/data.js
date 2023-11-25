@@ -1,52 +1,54 @@
-import {getRandomNum} from './util.js';
+import {getRandomElement, getRandomNum} from './util';
+import {PHOTOS_DESCRIPTION, USERS_COMMENTS, USERS_NAMES} from './subject.js';
+let pictureCount;
 
-const USERS_NAMES = [
-  'Rodney',
-  'Larry',
-  'Albert',
-  'Alfred',
-  'Robert',
-  'Allan',
-  'Mark',
-  'Michael',
-  'Gary',
-  'Carl'
-];
+const generatePhotoId = () => {
+  let id = 0;
+  return function () {
+    while (id < pictureCount) {
+      id += 1;
+      return id;
+    }
+  };
+};
 
-const USERS_COMMENTS = [
-  'Всё отлично!',
-  'В целом всё неплохо. Но не всё.',
-  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
-];
+const generateCommentId = () => {
+  let id = 0;
+  return function () {
+    id += 1;
+    return id;
+  };
+};
 
-const PHOTOS_DESCRIPTION = [
-  'Forever Young Forever drunk',
-  'Work, then work harder',
-  'One head is good, but two will also come up with nothing.',
-  'No matter how much I think, I still do everything different',
-  'My excuse is that I am young',
-  'No matter what I do, I like everything'
-];
+const createCommentId = generateCommentId();
+const createId = generatePhotoId();
 
-const createComments = () => ({
-  id: getRandomNum(1, 100),
-  avatar: `img/avatar-${getRandomNum(1, 6)}.svg`,
-  message: USERS_COMMENTS[getRandomNum(0, USERS_COMMENTS.length - 1)],
-  name: USERS_NAMES[getRandomNum(0, USERS_NAMES.length - 1)]
-});
+const createComment = () => {
+  const commentId = createCommentId();
+  return {
+    id: commentId,
+    avatar: `img/avatar-${getRandomNum (1, 6)}.svg`,
+    message: getRandomElement(USERS_COMMENTS),
+    name: getRandomElement(USERS_NAMES)
+  };
+};
 
-const createPost = (id) => ({
-  id: id + 1,
-  url: `photos/${id + 1}.jpg`,
-  description: PHOTOS_DESCRIPTION[getRandomNum(0, PHOTOS_DESCRIPTION.length - 1)],
-  likes: getRandomNum(15, 200),
-  comments: Array.from({ length: getRandomNum(0, 6) }, (_, i) => createComments(i))
-});
-const createPosts = () =>
-  Array.from({ length: 25 }, (_, i) => createPost(i));
-createPosts();
+const createPost = () => {
+  const commentsCount = getRandomNum (0, 30);
+  const commentsArray = Array.from({length: commentsCount}, createComment);
+  const photoID = createId();
+  return ({
+    id: photoID,
+    url: `photos/${photoID}.jpg`,
+    description: getRandomElement(PHOTOS_DESCRIPTION),
+    likes: getRandomNum (15, 200),
+    comments: commentsArray
+  });
+};
 
-export {createPosts};
+const createPostArray = (n) => {
+  pictureCount = n;
+  return Array.from({length: pictureCount}, createPost);
+};
+
+export {createPostArray};
