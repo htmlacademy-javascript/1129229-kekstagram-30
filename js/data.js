@@ -34,14 +34,14 @@ const PHOTOS_DESCRIPTION = [
 const createComments = () => ({
   id: getRandomNum(1, 100),
   avatar: `img/avatar-${getRandomNum(1, 6)}.svg`,
-  message: USERS_COMMENTS[getRandomNum(0, USERS_COMMENTS.length-1)],
-  name: USERS_NAMES[getRandomNum(0, USERS_NAMES.length-1)]
+  message: USERS_COMMENTS[getRandomNum(0, USERS_COMMENTS.length - 1)],
+  name: USERS_NAMES[getRandomNum(0, USERS_NAMES.length - 1)]
 });
 
 const createPost = (id) => ({
   id: id + 1,
   url: `photos/${id + 1}.jpg`,
-  description: PHOTOS_DESCRIPTION[getRandomNum(0, PHOTOS_DESCRIPTION.length-1)],
+  description: PHOTOS_DESCRIPTION[getRandomNum(0, PHOTOS_DESCRIPTION.length - 1)],
   likes: getRandomNum(15, 200),
   comments: Array.from({ length: getRandomNum(0, 6) }, (_, i) => createComments(i))
 });
