@@ -41,7 +41,7 @@ const renderComments = () => {
 const renderPost = (evt, postArray) => {
   const photo = evt.target.closest('.picture');
   postArray.forEach((photoPost) => {
-    if (parseInt(photo.dataset.id, 10) === photoPost.id) {
+    if (photo !== null && parseInt(photo.dataset.id, 10) === photoPost.id) {
       openModalPicture();
       removeComments();
       renderData(photoPost);
