@@ -1,5 +1,12 @@
 const COMMENTS_TO_SHOW = 5;
 const MAX_PICTURE_POSTS = 25;
+const COMMENT_LENGTH = 140;
+const MAX_HASHTAGS = 5;
+const HASHTAGS_ERRORS_TEXT = {
+  INVALID_COUNT: 'Не должно быть больше 5 хэштэгов',
+  INVALID_CORRECT: 'некорректный хэштэг',
+  NOT_UNIQUE: 'Ошибочный хэштэг',
+};
 
 const USERS_NAMES = [
   'Rodney',
@@ -32,4 +39,4 @@ const PHOTOS_DESCRIPTION = [
   'No matter what I do, I like everything'
 ];
 
-export {COMMENTS_TO_SHOW, MAX_PICTURE_POSTS, USERS_NAMES, USERS_COMMENTS, PHOTOS_DESCRIPTION};
+export {COMMENTS_TO_SHOW, MAX_PICTURE_POSTS, USERS_NAMES, USERS_COMMENTS, PHOTOS_DESCRIPTION, COMMENT_LENGTH, MAX_HASHTAGS, HASHTAGS_ERRORS_TEXT};
